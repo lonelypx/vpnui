@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password": "$2b$10$DEgN4zqTGRrSSwbbMhnwKOAh7kuEKb4xYEXO.sJVLlE9Ba1qSbDl.",
+      "role": "admin"
+    },
+    {
+      "username": "anil",
+      "password": "$2b$10$6fx5sIhFbzO0z66h.U7JROgcmXrG2Z2h97czR5w3YqKsniHN4LT4C",
+      "role": "admin",
+      "created": "2024-12-08T15:09:29.606Z",
+      "lastLogin": null
+    }
+  ],
+  "metadata": {
+    "lastUpdated": "2024-12-08T15:09:29.606Z"
+  }
+}

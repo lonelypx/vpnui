@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenVPN Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Login Form -->
+    <div id="loginSection" class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">OpenVPN Management</h2>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2" for="username">Username</label>
+                    <input type="text" id="username" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2" for="password">Password</label>
+                    <input type="password" id="password" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardSection" class="hidden min-h-screen bg-gray-100">
+        <nav class="bg-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center py-4">
+                    <h1 class="text-xl font-semibold text-gray-800">OpenVPN Dashboard</h1>
+                    <div class="flex items-center space-x-4">
+                        <span id="userDisplay" class="text-gray-600"></span>
+                        <button id="logoutBtn" class="text-red-500 hover:text-red-700">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-4 py-6">
+            <!-- Client Management Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">VPN Clients</h2>
+                    <button id="addClientBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200">
+                        Add New Client
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Section -->
+            <div id="adminSection" class="hidden bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">User Management</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Login</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Client Modal -->
+    <div id="addClientModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h3 class="text-xl font-semibold mb-4">Add New Client</h3>
+            <form id="addClientForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2" for="clientName">Client Name</label>
+                    <input type="text" id="clientName" class="w-full p-2 border rounded" required pattern="[a-zA-Z0-9_-]+">
+                </div>
+                <div class="flex items-center mb-4">
+                    <input type="checkbox" id="usePassword" class="mr-2">
+                    <label for="usePassword">Use Password Protection</label>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="closeModal('addClientModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Config Display Modal -->
+    <div id="configModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-[800px] max-h-[500px] overflow-hidden flex flex-col">
+            <h3 class="text-xl font-semibold mb-4" id="cname">Client Configuration</h3>
+            <div class="flex-1 overflow-y-auto bg-gray-100">
+                <pre id="configContent" class=" p-4  rounded text-sm" style="height: 400px;"></pre>
+            </div>
+            <div class="flex justify-end space-x-4 mt-4 pt-4 border-t">
+                <button onclick="downloadConfig()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Download</button>
+                <button onclick="closeModal('configModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+</body>
+</html>
