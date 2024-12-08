@@ -29,8 +29,8 @@ sudo ./openvpn-install.sh
 
 2. Clone this repository:
 ```bash
-git clone <your-repo-url>
-cd openvpn-gui-manager
+git clone https://github.com/lonelypx/vpnui
+cd vpnui
 ```
 
 3. Install dependencies:
@@ -38,9 +38,9 @@ cd openvpn-gui-manager
 npm install
 ```
 
-4. Create configuration:
+4. Edit configuration:
 ```bash
-cp .env.example .env
+.env
 # Edit .env with your settings
 ```
 
